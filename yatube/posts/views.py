@@ -31,16 +31,16 @@ def profile(request, username):
     user = get_object_or_404(User, username=username)
     posts = Post.objects.filter(author=user)
     page_obj = paginate(request, posts)
-    following = request.user.is_authenticated and Follow.objects.filter(
-        user=request.user, author=user
-    ).exists()
-    is_own_profile = request.user == user
+    following = False
+    if request.user.is_authenticated and not request.user == user:
+        following = Follow.objects.filter(
+            user=request.user, author=user
+        ).exists()
     context = {
         'author': user,
         'posts_count': posts.count(),
         'page_obj': page_obj,
         'following': following,
-        'is_own_profile': is_own_profile,
     }
     return render(request, 'posts/profile.html', context)
 
@@ -111,17 +111,21 @@ def add_comment(request, post_id):
 
 @login_required
 def follow_index(request):
-    following_authors = request.user.follower.all().values_list(
+    following_authors = request.user.follower.exclude(
+        author=request.user).values_list(
         'author', flat=True
     )
     posts = Post.objects.filter(author__in=following_authors)
-    context = {'page_obj': posts}
+    page_obj = paginate(request, posts)
+    context = {'page_obj': page_obj}
     return render(request, 'posts/follow.html', context)
 
 
 @login_required
 def profile_follow(request, username):
     author = get_object_or_404(User, username=username)
+    if request.user == author:
+        return redirect('posts:profile', username=username)
     Follow.objects.get_or_create(user=request.user, author=author)
     return redirect('posts:profile', username=username)
 
