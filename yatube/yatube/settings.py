@@ -11,7 +11,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '5iisyt(e$%(eqfm*%5*#ymopuu$v0j#mzdo+v6z6z2957##yr$'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 CSRF_FAILURE_VIEW = 'core.views.csrf_failure'
 

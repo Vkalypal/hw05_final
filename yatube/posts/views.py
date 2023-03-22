@@ -31,6 +31,9 @@ def profile(request, username):
     user = get_object_or_404(User, username=username)
     posts = Post.objects.filter(author=user)
     page_obj = paginate(request, posts)
+    no_follow = True
+    if request.user.is_authenticated and request.user == user:
+        no_follow = False
     follow = Follow.objects.filter(user=request.user.id,
                                    author=user).exists()
     following = True
@@ -43,6 +46,7 @@ def profile(request, username):
         'posts_count': posts.count(),
         'page_obj': page_obj,
         'following': following,
+        'no_follow': no_follow,
     }
     return render(request, 'posts/profile.html', context)
 
