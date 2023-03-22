@@ -4,21 +4,23 @@
 {% block content %}
 {% load thumbnail %}     
   <h3>Всего постов: {{ posts_count }}<!-- --> </h3>
-  {% if following and no_follow %}
-    <a
-      class="btn btn-lg btn-light"
-      href="{% url 'posts:profile_unfollow' author.username %}" role="button"
-    >
-      Отписаться
-    </a>
-  {% elif not following and no_follow  %}
+  {% if not is_own_profile %}
+    {% if following %}
       <a
-        class="btn btn-lg btn-primary"
-        href="{% url 'posts:profile_follow' author.username %}" role="button"
+        class="btn btn-lg btn-light"
+        href="{% url 'posts:profile_unfollow' author.username %}" role="button"
       >
-        Подписаться
+        Отписаться
       </a>
-   {% endif %}
+    {% else %}
+        <a
+          class="btn btn-lg btn-primary"
+          href="{% url 'posts:profile_follow' author.username %}" role="button"
+        >
+          Подписаться
+        </a>
+    {% endif %}
+  {% endif %}
   {% for post in page_obj %}
   <article>
     <ul>

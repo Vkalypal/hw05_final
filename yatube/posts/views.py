@@ -31,22 +31,16 @@ def profile(request, username):
     user = get_object_or_404(User, username=username)
     posts = Post.objects.filter(author=user)
     page_obj = paginate(request, posts)
-    no_follow = True
-    if request.user.is_authenticated and request.user == user:
-        no_follow = False
-    follow = Follow.objects.filter(user=request.user.id,
-                                   author=user).exists()
-    following = True
-    if follow is True:
-        following = True
-    else:
-        following = False
+    following = request.user.is_authenticated and Follow.objects.filter(
+        user=request.user, author=user
+    ).exists()
+    is_own_profile = request.user == user
     context = {
         'author': user,
         'posts_count': posts.count(),
         'page_obj': page_obj,
         'following': following,
-        'no_follow': no_follow,
+        'is_own_profile': is_own_profile,
     }
     return render(request, 'posts/profile.html', context)
 
