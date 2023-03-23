@@ -4,20 +4,22 @@
 {% block content %}
 {% load thumbnail %}     
   <h3>Всего постов: {{ posts_count }}<!-- --> </h3>
-  {% if following %}
-    <a
-      class="btn btn-lg btn-light"
-      href="{% url 'posts:profile_unfollow' author.username %}" role="button"
-    >
-      Отписаться
-    </a>
-  {% else %}
+  {% if request.user.is_authenticated and request.user != author %}
+    {% if following %}
       <a
-        class="btn btn-lg btn-primary"
-        href="{% url 'posts:profile_follow' author.username %}" role="button"
+        class="btn btn-lg btn-light"
+        href="{% url 'posts:profile_unfollow' author.username %}" role="button"
       >
-        Подписаться
+        Отписаться
       </a>
+    {% else %}
+        <a
+          class="btn btn-lg btn-primary"
+          href="{% url 'posts:profile_follow' author.username %}" role="button"
+        >
+          Подписаться
+        </a>
+    {% endif %}
   {% endif %}
   {% for post in page_obj %}
   <article>
@@ -38,7 +40,7 @@
     <a href="{% url 'posts:post_detail' post.id %}">подробная информация </a>
 </article>
 {% if post.group %}
-<a href="{% url 'posts:group_list' post.group.slug %}">все записи группы</a>    
+<a href="{% url 'posts:group_list' post.group.slug %}">все записи группы {{ post.group.title }}</a>    
 {% endif %}    
 {% if not forloop.last %}<hr>{% endif %}
 {% endfor %}

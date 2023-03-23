@@ -31,11 +31,9 @@ def profile(request, username):
     user = get_object_or_404(User, username=username)
     posts = Post.objects.filter(author=user)
     page_obj = paginate(request, posts)
-    following = False
-    if request.user.is_authenticated and not request.user == user:
-        following = Follow.objects.filter(
-            user=request.user, author=user
-        ).exists()
+    following = request.user.is_authenticated and Follow.objects.filter(
+        user=request.user, author=user
+    ).exists()
     context = {
         'author': user,
         'posts_count': posts.count(),
@@ -88,7 +86,6 @@ def post_edit(request, post_id):
     if request.method == 'POST' and form.is_valid():
         form.save()
         return redirect('posts:post_detail', post_id=post_id)
-    form = PostForm(instance=post)
     context = {
         'form': form,
         'is_edit': True,
@@ -111,10 +108,9 @@ def add_comment(request, post_id):
 
 @login_required
 def follow_index(request):
-    following_authors = request.user.follower.exclude(
-        author=request.user).values_list(
-        'author', flat=True
-    )
+    following_authors = User.objects.filter(
+        following__user=request.user
+    ).values_list('id', flat=True)
     posts = Post.objects.filter(author__in=following_authors)
     page_obj = paginate(request, posts)
     context = {'page_obj': page_obj}
