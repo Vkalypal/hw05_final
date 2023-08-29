@@ -1,3 +1,26 @@
-# hw05_final
+# Yatube
+## Социальная сеть Yatube
+### Возможности
+- Создание постов
+- Оставление комментариев к записям других пользователей
+- Добавление понравившихся авторов в избранное 
 
-[![CI](https://github.com/yandex-praktikum/hw05_final/actions/workflows/python-app.yml/badge.svg?branch=master)](https://github.com/yandex-praktikum/hw05_final/actions/workflows/python-app.yml)
+### Технологии
+- Python 3.9
+- Django==2.2.16
+- pytest==6.2.4
+
+### Запуск проекта в dev-режиме
+- Установите и активируйте виртуальное окружение
+- Установите зависимости из файла requirements.txt
+```
+pip install -r requirements.txt
+``` 
+- В папке с файлом manage.py выполните команду:
+```
+python3 manage.py runserver
+```
+- Когда вы запустите проект, по адресу  http://127.0.0.1:8000/ будет доступен проект Yatube.
+
+### Авторы
+Лётыч Никита
